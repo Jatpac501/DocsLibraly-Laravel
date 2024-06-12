@@ -32,7 +32,7 @@ const badgeClass = computed(() => {
 
 <template>
 
-    <div :class="badgeClass" class="w-8 h-8 flex items-center justify-center font-bold rounded-md transform">
+    <div :class="badgeClass" class="size-8 min-w-8 flex items-center justify-center font-bold rounded-md transform">
         {{ props.type }}
     </div>
 </template>
