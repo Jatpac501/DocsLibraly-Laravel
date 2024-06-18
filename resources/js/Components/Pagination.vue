@@ -15,7 +15,7 @@ const props = defineProps({
                 :href="link.url || '#'"
                 :class="[
                     'px-4 py-2 border rounded-md',
-                    link.active ? 'bg-indigo-500 text-white hover:bg-indigo-600' : 'text-gray-700 bg-white hover:bg-gray-100 ',
+                    link.active ? 'bg-indigo-500 text-white hover:bg-indigo-600' : 'text-gray-700 bg-white hover:bg-gray-100',
                     link.url ? 'border-gray-300' : 'opacity-50 pointer-events-none cursor-not-allowed'
                 ]"
             >

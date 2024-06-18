@@ -1,12 +1,13 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import {Link, router} from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue';
 import TypeFile from '@/Pages/Books/Partials/TypeFile.vue';
 
 const props = defineProps({
-    subject: String,
-    books: Object
+    subject: Object,
+    books: Object,
+    admin: Boolean
 });
 
 function formatNumber(value) {
@@ -25,12 +26,19 @@ function formatDate(dateString) {
 </script>
 
 <template>
-    <AppLayout :title="subject">
+    <AppLayout :title="subject.name">
         <template #header>
             <div class="flex flex-col items-center">
                 <h2 class="font-semibold text-3xl text-gray-900 leading-tight mt-6">
-                    {{ subject }}
+                    {{ subject.name }}
                 </h2>
+                <Link
+                    v-if='admin'
+                    :href="route('books.upload')"
+                    class="mt-4 px-4 py-2 border rounded-md bg-indigo-500 text-white hover:bg-indigo-600"
+                >
+                    Загрузить
+                </Link>
                 <Pagination :links="books.links" class="mt-4" />
             </div>
         </template>

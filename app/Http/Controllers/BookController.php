@@ -6,68 +6,49 @@ use App\Models\Book;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Subject;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\User;
+use Laravel\Jetstream\Team;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(int $id)
     {
         $subject = Subject::with('books')->findOrFail($id);
         $books = $subject->books()->orderBy('created_at', 'desc')->paginate(10);
+        $admin = Auth::user()->currentTeam->id == 2;
         return Inertia::render('Books/Index', [
-            'subject' => $subject->name,
+            'subject' => $subject,
             'books' => $books,
+            'admin' => $admin,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+
+    public function upload()
     {
-        //
+        return Inertia::render('Books/Upload', [
+            'subjects' => Subject::all(),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreBookRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Book $book)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Book $book)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateBookRequest $request, Book $book)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Book $book)
-    {
-        //
+    public function store(StoreBookRequest $request) {
+        $file = $request->file('file');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $filePath = $file->storeAs('uploads', $fileName, 'public');
+        Book::create([
+            'name' => $request->name,
+            'author' => $request->author,
+            'year' => $request->year,
+            'subject_id' => $request->subject_id,
+            'path_file' => $filePath,
+            'description' => $request->description,
+            'type' => pathinfo($filePath, PATHINFO_EXTENSION)
+        ]);
+        return redirect()->route('books.index', $request->subject_id);
     }
 }
+//Гражданская авиация: ХХI век. Сборник материалов XIV Международной молодежной научной конференции (14-15 апреля 2022 г.) : сборник статей
+//Содержит материалы XIV Международной молодежной научной конференции, состоявшейся 14-15 апреля 2022 г. на базе Ульяновского института гражданской авиации имени Главного маршала авиации Б. П. Бугаева. Опубликовано 120 докладов преподавателей, студентов и аспирантов вузов Минска, Ульяновска, Новосибирска, Бугуруслана, Белгорода, Самары, Сызрани.
+//сост. Доклады студентов и аспирантов  – Ульяновск.: УИ ГА

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('author')->nullable();
             $table->integer('year')->nullable();
             $table->integer('subject_id');
-            $table->string('path_file');
+            $table->text('path_file');
             $table->timestamps();
         });
     }
